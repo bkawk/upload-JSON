@@ -1,0 +1,71 @@
+<link rel="import" href="../polymer/polymer.html">
+<!--
+`upload-json`
+An element that uploads and parses a JSON file.
+
+Example:
+```
+<upload-json></upload-json>
+```
+
+@demo demo/index.html
+-->
+
+<dom-module id="upload-json">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      #upload {
+        width: 0px;
+        outline: none;
+      }
+      label{
+        cursor: pointer;
+        outline: none;
+      }
+    </style>
+   
+  <label for=upload>
+    <slot></slot>
+    <input type=file id=upload on-change="_extractJson">
+  </label>
+  </template>
+
+  <script>
+    class MyElement extends Polymer.Element {
+      static get is() { return 'upload-json'; }
+      static get properties() {
+        return {
+        /**
+        * Represents a JSON object that will be added to the file for download
+        *
+        * @type {Object}
+        */
+          json: {
+            type: Object,
+            notify: true
+          }
+        };
+      }
+      /**
+      * Encode and stringify the supplied json
+      */
+      _extractJson(event) {
+        this.json = null 
+        var files = event.target.files; 
+        var theFile = files[0];
+        var reader = new FileReader();
+        reader.onload = (function(data) {
+          return function(e) {
+            var data = e.target.result
+            this.json = JSON.parse(data)
+          };
+        })(theFile);
+        reader.readAsText(theFile);
+      }
+
+    } window.customElements.define(MyElement.is, MyElement);
+  </script>
+</dom-module>
