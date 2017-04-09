@@ -46,6 +46,15 @@ Example:
           json: {
             type: Object,
             notify: true
+          },
+        /**
+        * Represents a flag to show a console log of the json
+        *
+        * @type {Boolean}
+        */
+          debug: {
+            type: Boolean,
+            value: false
           }
         };
       }
@@ -60,9 +69,12 @@ Example:
         reader.onload = (function(data) {
           return function(e) {
             var data = e.target.result
-            this.json = JSON.parse(data)
-          };
-        })(theFile);
+            this.json = JSON.parse(data);
+            if(this.debug){
+              console.log(this.json)
+            }
+          }.bind(this);
+        }.bind(this))(theFile);
         reader.readAsText(theFile);
       }
 
